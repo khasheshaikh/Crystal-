@@ -1,0 +1,12 @@
+name: crystal-weather
+version: 0.1.0
+
+authors:
+  - Exybore <exybore@gmail.com>
+
+crystal: 0.30.0
+
+license: MIT
+dependencies:
+  kemal:
+    github: kemalcr/kemal
