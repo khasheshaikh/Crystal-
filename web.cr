@@ -86,79 +86,103 @@ get "/weather" do |env|
         city_info = weather.city
         conditions = weather.conditions
   
-        <<-HTML
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-            <meta charset="UTF-8" />
-            <title>Weather in #{city_info.name}</title>
-            <style>
-                body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background: linear-gradient(to right, #dfe9f3, #ffffff);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                margin: 0;
-                }
+        %(
+            
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Weather in #{city_info.name}</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #eef2f3, #ffffff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
 
-                .card {
-                background: white;
-                padding: 2.5rem;
-                border-radius: 1.5rem;
-                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-                text-align: center;
-                max-width: 420px;
-                width: 90%;
-                }
+    .container {
+      display: flex;
+      gap: 2rem;
+      padding: 2rem;
+    }
 
-                h2 {
-                margin-top: 0;
-                color: #2c3e50;
-                }
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
 
-                .emoji {
-                font-size: 3rem;
-                margin: 0.5rem 0;
-                }
+    h2 {
+      color: #2c3e50;
+      margin-top: 0;
+    }
 
-                p {
-                margin: 0.5rem 0;
-                font-size: 1.1rem;
-                }
+    .emoji {
+      font-size: 3rem;
+    }
 
-                .highlight {
-                font-weight: bold;
-                color: #2980b9;
-                }
+    p {
+      margin: 0.5rem 0;
+      font-size: 1.05rem;
+    }
 
-                a {
-                display: inline-block;
-                margin-top: 1.5rem;
-                text-decoration: none;
-                color: #3498db;
-                font-weight: bold;
-                }
+    a {
+      text-decoration: none;
+      color: #3498db;
+      font-weight: bold;
+      margin-top: 1rem;
+      display: inline-block;
+    }
 
-                a:hover {
-                text-decoration: underline;
-                }
-            </style>
-            </head>
-            <body>
-            <div class="card">
-                <h2>Weather in #{city_info.name}, #{city_info.country_code}</h2>
-                <div class="emoji">#{conditions.emoji}</div>
-                <p class="highlight">#{conditions.description.capitalize}</p>
-                <p>🌡 Temperature: #{conditions.temperature}°C</p>
-                <p>💧 Humidity: #{conditions.humidity}%</p>
-                <p>💨 Wind: #{conditions.wind_speed} m/s</p>
-                <a href="/">← Search another city</a>
-            </div>
-            </body>
-            </html>
-        HTML
+    iframe {
+      border-radius: 12px;
+      width: 100%;
+      height: 500px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Weather Card -->
+    <div class="card">
+      <h2>🌤 Weather in #{city_info.name}, #{city_info.country_code}</h2>
+      <p class="emoji">#{conditions.emoji}</p>
+      <p><strong>#{conditions.description.capitalize}</strong></p>
+      <p>🌡 Temperature: #{conditions.temperature}°C</p>
+      <p>💧 Humidity: #{conditions.humidity}%</p>
+      <p>💨 Wind: #{conditions.wind_speed} m/s</p>
+      <p>🧭 Pressure: #{conditions.pressure} hPa</p>
+      <p>☁️ Cloudiness: #{conditions.clouds}%</p>
+      <p>🌅 Sunrise: #{city_info.sunrise.to_s("%I:%M %p UTC")}</p>
+      <p>🌇 Sunset: #{city_info.sunset.to_s("%I:%M %p UTC")}</p>
+      <p>🕒 Local Time: #{(Time.utc + city_info.timezone.seconds).to_s("%I:%M %p")}</p>
+      <p>📍 Coordinates: #{city_info.coordinates.latitude}, #{city_info.coordinates.longitude}</p>
+      <a href="/">← Search another city</a>
+    </div>
+
+    <!-- Spotify Card -->
+    <div class="card">
+      <h2>🎵 Weather Matched Playlist</h2>
+      <iframe src="https://open.spotify.com/embed/playlist/#{conditions.playlist_id}" 
+        frameborder="0" 
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+        loading="lazy">
+      </iframe>
+    </div>
+  </div>
+</body>
+</html>
+
+
+        )
 
       rescue e
         "<p>Error: #{e.message}</p><p><a href='/'>Try again</a></p>"

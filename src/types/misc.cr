@@ -56,6 +56,28 @@ module CrystalWeather
         @clouds = data["clouds"]["all"].as_i
         @wind_speed = data["wind"]["speed"].as_f
       end
+      def playlist_url : String
+        case name.downcase
+        when "clear"
+          "https://open.spotify.com/playlist/37i9dQZF1DXdPec7aLTmlC"
+        when "clouds"
+          "https://open.spotify.com/playlist/37i9dQZF1DX889U0CL85jj"
+        when "rain"
+          "https://open.spotify.com/playlist/37i9dQZF1DXbvABJXBIyiY"
+        when "snow"
+          "https://open.spotify.com/playlist/37i9dQZF1DX2yvmlOdMYzV"
+        when "thunderstorm"
+          "https://open.spotify.com/playlist/37i9dQZF1DWZtZ8vUCzche"
+        else
+          "https://open.spotify.com/playlist/37i9dQZF1DWZjqjZMudx9T"
+        end
+      end
+      
+      def playlist_id : String
+        playlist_url.split("/").last
+      end
+      
+      
       
     end
 
